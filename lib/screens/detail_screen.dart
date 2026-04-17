@@ -743,12 +743,11 @@ class _LiveCountdownTimerState extends State<_LiveCountdownTimer> {
               _timeBox(displayHours, 'HRS', theme),
               Text(':', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: widget.color)),
               _timeBox(minutes, 'MIN', theme),
-              if (!showDays) ...[
-                Text(':', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: widget.color)),
-                _timeBox(seconds, 'SEC', theme),
-              ],
+              Text(':', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: widget.color)),
+              _timeBox(seconds, 'SEC', theme),
             ],
           ),
+
         ],
       ),
     );

@@ -8,21 +8,15 @@ Syncora is a fully functional, production-quality Flutter mobile application bui
 
 ## 📸 Screenshots
 
-<p align="center">
-  <img src="screenshots/Splash_screen.png" width="18%" alt="Splash Screen" />
-  &nbsp;&nbsp;
-  <img src="screenshots/Login_screen.png" width="18%" alt="Login" />
-  &nbsp;&nbsp;
-  <img src="screenshots/dashboard_screen.png" width="18%" alt="Dashboard" />
-  &nbsp;&nbsp;
-  <img src="screenshots/Overview_screen.png" width="18%" alt="Course Overview" />
-  &nbsp;&nbsp;
-  <img src="screenshots/Assignments_screen.png" width="18%" alt="Assignments" />
-</p>
+| Splash Screen | Register | Login | Dashboard | Course Overview |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="screenshots/Splash_screen.png" height="400" /> | <img src="screenshots/Register_screen.png" height="400" /> | <img src="screenshots/Login_screen.png" height="400" /> | <img src="screenshots/dashboard_screen.png" height="400" /> | <img src="screenshots/Overview_screen.png" height="400" /> |
 
-<p align="center">
-  <sub>Splash Screen &nbsp;&nbsp;|&nbsp;&nbsp; Login &nbsp;&nbsp;|&nbsp;&nbsp; Dashboard &nbsp;&nbsp;|&nbsp;&nbsp; Course Overview &nbsp;&nbsp;|&nbsp;&nbsp; Assignments</sub>
-</p>
+<br>
+
+| Assignments | Schedule | Instructor | Searchbar | Logout |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="screenshots/Assignments_screen.png" height="400" /> | <img src="screenshots/Schedule_screen.png" height="400" /> | <img src="screenshots/Instructor_screen.png" height="400" /> | <img src="screenshots/Searchbar.png" height="400" /> | <img src="screenshots/Logout_screen.png" height="400" /> |
 
 ---
 

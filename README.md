@@ -6,6 +6,26 @@ Syncora is a fully functional, production-quality Flutter mobile application bui
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshots/Splash_screen.png" width="18%" alt="Splash Screen" />
+  &nbsp;&nbsp;
+  <img src="screenshots/Login_screen.png" width="18%" alt="Login" />
+  &nbsp;&nbsp;
+  <img src="screenshots/dashboard_screen.png" width="18%" alt="Dashboard" />
+  &nbsp;&nbsp;
+  <img src="screenshots/Overview_screen.png" width="18%" alt="Course Overview" />
+  &nbsp;&nbsp;
+  <img src="screenshots/Assignments_screen.png" width="18%" alt="Assignments" />
+</p>
+
+<p align="center">
+  <sub>Splash Screen &nbsp;&nbsp;|&nbsp;&nbsp; Login &nbsp;&nbsp;|&nbsp;&nbsp; Dashboard &nbsp;&nbsp;|&nbsp;&nbsp; Course Overview &nbsp;&nbsp;|&nbsp;&nbsp; Assignments</sub>
+</p>
+
+---
+
 ## 📋 Table of Contents
 
 1. [Project Requirements](#-1-project-requirements)

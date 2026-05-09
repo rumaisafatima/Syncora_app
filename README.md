@@ -18,6 +18,12 @@ Syncora is a fully functional, production-quality Flutter mobile application bui
 |:---:|:---:|:---:|:---:|:---:|
 | <img src="screenshots/Assignments_screen.png" height="400" /> | <img src="screenshots/Schedule_screen.png" height="400" /> | <img src="screenshots/Instructor_screen.png" height="400" /> | <img src="screenshots/Searchbar.png" height="400" /> | <img src="screenshots/Logout_screen.png" height="400" /> |
 
+<br>
+
+| Dashboard (White / Light Mode) |
+|:---:|
+| <img src="screenshots/dashboard_screen_white.png" height="400" /> |
+
 ---
 
 ## 📋 Table of Contents

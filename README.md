@@ -1,4 +1,4 @@
-# 📱 Syncora — Premium Flutter Multi-Screen App
+# 📱 Syncora  Premium Flutter Multi-Screen App
 
 > **Tagline:** Connected learning, simplified.
 
@@ -549,7 +549,7 @@ git push
 
 ## 👩‍💻 Developer
 
-**Rumaisa Fatima**
+**Rumaisa Fatima (Se221076)**
 - GitHub: [@rumaisafatima](https://github.com/rumaisafatima)
 
 ---

@@ -2,7 +2,7 @@
 
 > **Tagline:** Connected learning, simplified.
 
-Syncora is a fully functional, production-quality Flutter mobile application built as a flagship academic project demonstrating mastery of modern Flutter development. It follows a clean **MVC + Provider** architecture with real-time state management, persistent local storage, advanced form validation, and a fully interactive course dashboard.
+Syncora is a fully functional, production-quality Flutter mobile application built as a flagship academic project demonstrating mastery of modern Flutter development. It follows a clean **MVC + Provider** architecture with real-time state management, persistent local storage, advanced form validation and a fully interactive course dashboard.
 
 ---
 

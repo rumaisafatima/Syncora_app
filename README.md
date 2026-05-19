@@ -1,557 +1,314 @@
-# 📱 Syncora  Premium Flutter Multi-Screen App
+# 📱 Syncora — Flutter Multi-Screen App
 
-> **Tagline:** Connected learning, simplified.
+## 📘 Overview
 
-Syncora is a fully functional, production-quality Flutter mobile application built as a flagship academic project demonstrating mastery of modern Flutter development. It follows a clean **MVC + Provider** architecture with real-time state management, persistent local storage, advanced form validation and a fully interactive course dashboard.
+A complete **multi-screen Flutter application** featuring **user authentication**, **form validation**, **navigation**, and **full CRUD course management via REST API** — built as a **coding assessment project** demonstrating professional Flutter development skills.
+
+The app implements a full **registration → login → dashboard → detail** flow with **comprehensive input validation**, **separated business logic**, **reusable components**, and **clean architecture** following industry best practices.
+
+In this extension, the app integrates the **JSONPlaceholder REST API** to implement full **CRUD operations** (Create, Read, Update, Delete) for course data — following a clean service-layer architecture that keeps API logic completely separate from UI.
+
+---
+
+💼 This project is part of my **Mobile Application Development** coursework at **DHA Suffa University**, highlighting **Flutter UI development**, **REST API integration**, **state management**, and **multi-screen navigation proficiency**.
+
+---
+
+## 🌐 API Used
+
+**[JSONPlaceholder](https://jsonplaceholder.typicode.com)** — A free fake REST API used for testing and prototyping.
+
+| **Operation** | **HTTP Method** | **Endpoint** |
+|---------------|----------------|--------------|
+| Fetch Courses | `GET` | `/posts?_limit=10` |
+| Add Course | `POST` | `/posts` |
+| Update Course | `PUT` | `/posts/{id}` |
+| Delete Course | `DELETE` | `/posts/{id}` |
+
+### 📄 Documentation Followed
+- Official JSONPlaceholder Guide: [https://jsonplaceholder.typicode.com/guide](https://jsonplaceholder.typicode.com/guide)
+- Flutter `http` package: [https://pub.dev/packages/http](https://pub.dev/packages/http)
+- Flutter Provider package: [https://pub.dev/packages/provider](https://pub.dev/packages/provider)
+
+> **Note:** JSONPlaceholder is a read-only mock API — POST/PUT/DELETE requests are accepted and return valid responses, but do not persist data on the server. The app reflects changes locally in state.
+
+---
+
+## 🌿 Branch
+
+All CRUD API integration work is on the dedicated branch:
+
+```
+feature/course-api-integration
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+lib/
+├── main.dart                        # App entry point (MultiProvider setup)
+├── models/
+│   ├── user_model.dart              # User data class
+│   ├── subject_model.dart           # Subject data class
+│   └── course_model.dart            # Course model (maps JSONPlaceholder /posts)
+├── services/
+│   └── course_service.dart          # API layer — all HTTP calls (GET/POST/PUT/DELETE)
+├── enums/
+│   └── enums.dart                   # Gender enum with labels
+├── utils/
+│   └── validators.dart              # Reusable static validator class
+├── controllers/
+│   ├── auth_controller.dart         # Business logic (auth)
+│   └── course_controller.dart       # State management for CRUD (ChangeNotifier)
+├── screens/
+│   ├── registration_screen.dart     # Registration form + validation
+│   ├── login_screen.dart            # Login + remember me
+│   ├── dashboard_screen.dart        # User info + subject list + API Courses entry
+│   ├── courses_screen.dart          # Full CRUD UI for API courses
+│   └── detail_screen.dart           # Subject detail view
+└── widgets/
+    └── custom_text_field.dart       # Reusable text field component
+```
+
+### 🧩 Layer Separation
+| **Layer** | **Responsibility** |
+|-----------|-------------------|
+| **Models** | Type-safe data classes (`UserModel`, `SubjectModel`, `CourseModel`) |
+| **Services** | `CourseService` — all HTTP/API calls. Completely separate from UI. |
+| **Controllers** | `AuthController` + `CourseController` — business logic & state management |
+| **Screens** | One file per screen — pure presentation layer |
+| **Widgets** | `CustomTextField` — reusable component, eliminates duplication |
 
 ---
 
 ## 📸 Screenshots
 
-| Splash Screen | Register | Login | Dashboard | Course Overview |
-|:---:|:---:|:---:|:---:|:---:|
-| <img src="screenshots/Splash_screen.png" height="400" /> | <img src="screenshots/Register_screen.png" height="400" /> | <img src="screenshots/Login_screen.png" height="400" /> | <img src="screenshots/dashboard_screen.png" height="400" /> | <img src="screenshots/Overview_screen.png" height="400" /> |
+### 🔐 Authentication Flow
+<p align="center">
+  <img src="images/1.png" width="250" alt="Registration Screen"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="images/2.png" width="250" alt="Login Screen"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="images/6.png" width="250" alt="Dashboard Screen"/>
+</p>
+<p align="center">
+  <em>Registration Screen → Login Screen → Dashboard Screen</em>
+</p>
 
-<br>
-
-| Assignments | Schedule | Instructor | Searchbar | Logout |
-|:---:|:---:|:---:|:---:|:---:|
-| <img src="screenshots/Assignments_screen.png" height="400" /> | <img src="screenshots/Schedule_screen.png" height="400" /> | <img src="screenshots/Instructor_screen.png" height="400" /> | <img src="screenshots/Searchbar.png" height="400" /> | <img src="screenshots/Logout_screen.png" height="400" /> |
-
-<br>
-
-| Dashboard (White / Light Mode) |
-|:---:|
-| <img src="screenshots/dashboard_screen_white.png" height="400" /> |
-
----
-
-## 📋 Table of Contents
-
-1. [Project Requirements](#-1-project-requirements)
-2. [Tech Stack & Dependencies](#-2-tech-stack--dependencies)
-3. [Project Structure](#-3-project-structure)
-4. [File-by-File Breakdown](#-4-file-by-file-breakdown)
-5. [Core Code Logic Explained](#-5-core-code-logic-explained)
-6. [Screen Walkthrough](#-6-screen-walkthrough)
-7. [How to Run Locally](#-7-how-to-run-locally)
-8. [Git Repository](#-8-git-repository)
+### 📚 Subject Detail Screens
+<p align="center">
+  <img src="images/3.png" width="250" alt="Mobile App Development"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="images/4.png" width="250" alt="UI/UX Design"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="images/5.png" width="250" alt="FYP-II AutoTestGen+"/>
+</p>
+<p align="center">
+  <em>Mobile App Dev → UI/UX Design → FYP-II (AutoTestGen+)</em>
+</p>
 
 ---
 
-## ✅ 1. Project Requirements
+## ⚙️ Features Implemented
 
-This app satisfies every requirement from the academic Flutter evaluation rubric:
+### Original Features
+| **Screen** | **Key Features** |
+|------------|-----------------| 
+| **Registration** | Full Name, Email, Password, Confirm Password, Gender dropdown with real-time validation |
+| **Login** | Email/Password authentication, show/hide password toggle, Remember Me checkbox |
+| **Dashboard** | User profile card with avatar, dynamic subject list, tap navigation, logout with confirmation |
+| **Detail** | Subject header with gradient banner, instructor info, course description, schedule, location |
 
-### Registration Screen
-| Requirement | Status | Implementation |
-|---|---|---|
-| Full Name field | ✅ | `CustomTextField` with full name validator |
-| Email with validation | ✅ | Regex: `^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$` |
-| Password / Re-type Password | ✅ | Side-by-side validators with match check |
-| Gender selection dropdown | ✅ | `DropdownButtonFormField<Gender>` using enum |
-| Min 6 characters password | ✅ | `if (pw.length < 6)` check in `AppValidators` |
-| At least 1 uppercase letter | ✅ | `RegExp(r'[A-Z]').hasMatch(pw)` |
-| At least 1 special character | ✅ | `RegExp(r'[!@#\$%^&*...]').hasMatch(pw)` |
-| All fields required | ✅ | `AppValidators.required()` on every field |
-| Confirm password matching | ✅ | `AppValidators.confirmPassword()` |
-| Success navigation to login | ✅ | `Navigator.pushReplacementNamed(context, '/login')` |
-
-### Login Screen
-| Requirement | Status | Implementation |
-|---|---|---|
-| Email field with validation | ✅ | `AppValidators.email()` |
-| Password toggle (show/hide) | ✅ | Stateful `_showPassword` + eye icon `IconButton` |
-| Remember Me checkbox | ✅ | Persists session to `SharedPreferences` |
-| Login navigates to dashboard | ✅ | `Navigator.pushReplacementNamed(context, '/dashboard')` |
-
-### Dashboard Screen
-| Requirement | Status | Implementation |
-|---|---|---|
-| User name display with avatar | ✅ | `CircleAvatar` with initials from `UserModel.initials` |
-| Dynamic subject list | ✅ | `Subject.values` enum mapped to cards |
-| Tap gesture for navigation | ✅ | `GestureDetector` + `onTap` → `/detail` |
-| Navigation to detail screen | ✅ | `Navigator.pushNamed()` with `arguments` payload |
-| Logout button → login screen | ✅ | `OutlinedButton` with `_confirmLogout()` dialog |
-
-### Detail Screen
-| Requirement | Status | Implementation |
-|---|---|---|
-| Subject header displayed | ✅ | `SliverAppBar` with subject name |
-| Banner image | ✅ | `CustomPainter` geometric gradient banner |
-| Description | ✅ | Pulled from `Subject.description` enum field |
-| Schedule details | ✅ | Live countdown timer + schedule string from enum |
-
-### Core Architecture Requirements
-| Requirement | Status | Implementation |
-|---|---|---|
-| Form validation | ✅ | `Form` + `GlobalKey<FormState>` + `autovalidateMode` |
-| Custom Validator Class | ✅ | `lib/validators/app_validators.dart` |
-| Enum Implementation | ✅ | `Gender`, `AuthState`, `Subject` enums |
-| Controller Layer | ✅ | `AuthController extends ChangeNotifier` |
-| Project on Git Repository | ✅ | [github.com/rumaisafatima/Syncora_app](https://github.com/rumaisafatima/Syncora_app) |
+### 🆕 CRUD API Extension
+| **Feature** | **Details** |
+|-------------|------------|
+| **Fetch Courses (GET)** | Retrieves 10 courses from JSONPlaceholder `/posts`. Shows loading indicator while fetching. Handles error states with retry button. |
+| **Add Course (POST)** | FAB → dialog form with title + description. Validates inputs. POSTs to API. Prepends new course to list on success. |
+| **Update Course (PUT)** | Edit button on each card → pre-filled form dialog. PUTs update to API. Reflects changes in UI immediately. |
+| **Delete Course (DELETE)** | Delete button → confirmation dialog. DELETEs from API. Removes item from list after successful response. |
 
 ---
 
-## 🛠 2. Tech Stack & Dependencies
+## 🔒 Validation Rules
 
-```yaml
-dependencies:
-  flutter: sdk           # Core framework
-  provider: ^6.1.2       # State management (ChangeNotifier pattern)
-  shared_preferences: ^2.2.2  # Persistent local key-value storage
-  google_fonts: ^8.0.2   # Premium typography (Inter font family)
-  cupertino_icons: ^1.0.6  # iOS-style icon set
-```
-
-| Technology | Role |
-|---|---|
-| **Flutter 3.10+** | Cross-platform UI framework (Android + iOS) |
-| **Dart 3.0+** | Programming language |
-| **Provider** | Reactive state management via `ChangeNotifier` |
-| **SharedPreferences** | Local device storage (Remember Me, Dark Mode, Bookmarks) |
-| **Google Fonts** | Inter & Outfit typefaces for premium UI |
+| **Field** | **Rules** |
+|-----------|----------|
+| **Full Name** | Required, minimum 2 characters |
+| **Email** | Required, valid email format (regex validated) |
+| **Password** | Minimum 6 characters, at least 1 uppercase letter, at least 1 special character |
+| **Confirm Password** | Required, must match password field |
+| **Gender** | Required dropdown selection |
+| **Course Title** | Required (CRUD form) |
+| **Course Description** | Required (CRUD form) |
 
 ---
 
-## 📁 3. Project Structure
+## 🗺️ Navigation Flow
 
 ```
-flutter_app/
-├── lib/
-│   ├── main.dart                    # App entry point, routing, theming
-│   ├── controllers/
-│   │   └── auth_controller.dart     # Business logic & state management
-│   ├── enums/
-│   │   └── app_enums.dart           # Gender, AuthState, Subject enums
-│   ├── models/
-│   │   └── user_model.dart          # User data class
-│   ├── screens/
-│   │   ├── splash_screen.dart       # Animated entry + auth guard
-│   │   ├── login_screen.dart        # Login form + validation
-│   │   ├── register_screen.dart     # Registration form + validation
-│   │   ├── dashboard_screen.dart    # Course list + user profile
-│   │   └── detail_screen.dart       # Course detail + tabs + timer
-│   ├── validators/
-│   │   └── app_validators.dart      # Static validation methods
-│   └── widgets/
-│       └── custom_text_field.dart   # Reusable input field component
-├── android/                         # Android build configuration
-├── ios/                             # iOS build configuration
-├── pubspec.yaml                     # Dependency manifest
-└── README.md                        # This file
+Registration ──pushReplacement──► Login ──pushReplacement──► Dashboard ──push──► Detail
+                   ↑                           ↑                    │
+                   │                           └── Logout ◄──────────┘
+                   └──────────── Toggle ─────────────┘
+                                                      │
+                                                      └──push──► Courses (API CRUD)
 ```
 
 ---
 
-## 📄 4. File-by-File Breakdown
+## 📚 Enrolled Subjects
+
+| **Subject** | **Instructor** | **Day** | **Timing** | **Location** |
+|-------------|---------------|---------|-----------|-------------|
+| Mobile Application Development | Ms. Roshana Mughal (VF) | Saturday | Slot 4–6 (10:30 – 12:30) | CyS-Lab |
+| Software Re-Engineering | Mr. Conrad D'Silva / Ms. Naureen Anwar (VF) | Saturday | Slot 2–4 (08:30 – 10:30) | SF-239 |
+| Management Information Systems (MIS) | Mr. Muhammad Ahmed Qaiser (VF) | Saturday | Slot 7–9 (13:10 – 15:10) | SF-240 |
+| UI/UX Design & Development | Dr. Raazia Sosan Waseem | Wednesday | Slot 8–9 | adv-AI Lab |
+| FYP-II (AutoTestGen+) | Mam Soohan Abbasi | Wednesday | Slot 10–11 (14:30 – 15:50) | SF-224 |
 
 ---
 
-### `lib/main.dart` — App Entry Point
+## 🧠 Technical Highlights
 
-**What it does:**
-- Initializes `AuthController` **before** the UI launches using `WidgetsFlutterBinding.ensureInitialized()`
-- Reads `SharedPreferences` on startup to restore saved sessions (Remember Me)
-- Wraps the entire app in `ChangeNotifierProvider` so every widget tree can access auth state
-- Defines all named routes: `/`, `/login`, `/register`, `/dashboard`, `/detail`
-- Contains a **route guard** that blocks unauthorized users from accessing `/dashboard` or `/detail` without logging in — redirecting them to `/login`
-- Defines both **Light Theme** and **Dark Theme** using `ColorScheme.fromSeed()` with custom indigo/violet color palette
+🔸 **Service Layer Architecture — API Logic Separation**
+*Approach:* `CourseService` class handles all HTTP operations. Controllers call service methods. UI only observes state.
+*Benefit:* Clean, testable, reusable API layer — no HTTP code in UI files.
 
-**Key logic:**
-```dart
-// Route guard — prevents unauthenticated access
-onGenerateRoute: (settings) {
-  if (settings.name == '/dashboard' || settings.name == '/detail') {
-    if (!isAuthenticated) {
-      return MaterialPageRoute(builder: (_) => const LoginScreen());
-    }
-  }
-  return null;
-},
-```
+🔸 **ChangeNotifier State Management**
+*Approach:* `CourseController extends ChangeNotifier` manages `isLoading`, `errorMessage`, and `courses` list.
+*Benefit:* UI reacts automatically to state changes via `Consumer<CourseController>`.
 
----
+🔸 **Custom Validator Class — Separation of Concerns**
+*Approach:* All validation logic in a single static class with private constructor.
+*Benefit:* Reusable across screens, easy to unit test, zero UI coupling.
 
-### `lib/enums/app_enums.dart` — Data Constraints
+🔸 **Enum Implementation — Type-Safe Categorical Data**
+*Approach:* `Gender` enum with `label` getter for display text.
+*Benefit:* Prevents invalid values, eliminates hardcoded strings.
 
-**What it does:**
-Defines three enums that replace error-prone raw strings throughout the app.
-
-#### `Gender` enum
-```dart
-enum Gender {
-  male('Male'),
-  female('Female'),
-  other('Other'),
-  preferNotToSay('Prefer not to say');
-  final String label;
-}
-```
-Used in the registration dropdown and stored/retrieved from `SharedPreferences`.
-
-#### `AuthState` enum
-```dart
-enum AuthState { idle, loading, success, error }
-```
-Drives the `AuthController` state machine. The UI listens to this to show loading spinners or error messages.
-
-#### `Subject` enum
-The most complex enum — each Subject carries 7 typed fields:
-```dart
-enum Subject {
-  mobileAppDevelopment(
-    name: 'Mobile App Development',
-    code: 'CS-401',
-    schedule: 'Mon / Wed / Fri  —  9:00 AM – 10:30 AM',
-    room: 'CYS Lab',
-    instructor: 'Mam Rooshana Mughal',
-    email: 'rooshana.mughal@gmail.com',
-    credits: 3,
-  ),
-  // ... 4 more subjects
-}
-```
-
-**Subjects included:**
-| Code | Name | Instructor | Room |
-|---|---|---|---|
-| CS-401 | Mobile App Development | Mam Rooshana Mughal | CYS Lab |
-| CS-402 | Software Re-engineering | Sir Conrad 'D Silva / Mam Noureen Anwar | Room 201 |
-| CS-403 | Management Information Systems | Ahmed Qaiser | SF-240 |
-| CS-404 | UI/UX Design and Development | Mam Raazia Sosan | ADV-Ai Lab |
-| CS-499 | Final Year Project II | Dr. Kamran Khan | Project Lab |
+🔸 **Proper Error & Loading State Handling**
+*Approach:* Every API call transitions through loading → success/error states.
+*Benefit:* Users always know what's happening — spinner while loading, error with retry on failure.
 
 ---
 
-### `lib/models/user_model.dart` — User Data Class
+## 💡 Key Learnings & Skills Demonstrated
 
-**What it does:**
-A clean, immutable data model representing a logged-in user.
-
-```dart
-class UserModel {
-  final String fullName;
-  final String email;
-  final Gender gender;
-}
-```
-
-**Computed properties:**
-- `firstName` — extracts the first word from `fullName` (e.g., "Rumaisa" from "Rumaisa Fatima")
-- `initials` — extracts first letters of first + last name (e.g., "RF") for the avatar display
-
-**Serialization:**
-- `toMap()` → converts to `Map<String, dynamic>` for storage
-- `fromMap()` → rebuilds a `UserModel` from stored data (used on app restart)
+| **Area** | **Skills Gained** |
+|----------|-------------------|
+| **REST API Integration** | GET, POST, PUT, DELETE with `http` package, JSON parsing |
+| **State Management** | `ChangeNotifier` + `Provider` pattern |
+| **Architecture** | Strict service/controller/UI separation |
+| **Flutter UI Development** | Multi-screen layouts, Material Design 3, responsive forms |
+| **Form Validation** | Real-time validation, custom validators, regex |
+| **Navigation** | Push/pushReplacement strategies |
+| **UX Best Practices** | Loading indicators, confirmation dialogs, snackbar feedback, pull-to-refresh |
 
 ---
 
-### `lib/validators/app_validators.dart` — Validation Logic
+## 🧰 Tools & Technologies
 
-**What it does:**
-A pure static class with zero UI dependencies. All validation logic lives here and is reused across both the login and registration screens.
-
-```dart
-class AppValidators {
-  AppValidators._(); // Private constructor — prevents instantiation
-
-  static String? required(String? value, {String fieldName = 'This field'})
-  static String? fullName(String? value)
-  static String? email(String? value)
-  static String? password(String? value)
-  static String? confirmPassword(String? value, String originalPassword)
-  static String? gender(String? value)
-}
-```
-
-**Password validation rules:**
-```dart
-if (pw.length < 6)           → "Password must be at least 6 characters"
-if (!RegExp(r'[A-Z]')...)    → "Must contain at least 1 uppercase letter"
-if (!RegExp(r'[!@#$...]')...) → "Must contain at least 1 special character"
-```
-
-**Email validation regex:**
-```
-^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$
-```
-This ensures `you@example.com` passes but `user@` or `@domain` fails.
+| **Category** | **Tools / Technologies** |
+|--------------|--------------------------|
+| **Framework** | Flutter 3.x |
+| **Language** | Dart |
+| **API** | JSONPlaceholder (https://jsonplaceholder.typicode.com) |
+| **Packages** | `http ^1.2.1`, `provider ^6.1.2`, `cupertino_icons` |
+| **Design System** | Material Design 3 |
+| **IDE** | VS Code / Android Studio |
+| **Emulator** | Android Emulator (API 37) |
+| **Version Control** | Git / GitHub |
+| **Branch** | `feature/course-api-integration` |
 
 ---
 
-### `lib/controllers/auth_controller.dart` — Business Logic
+## 🚀 How to Run
 
-**What it does:**
-The core controller extending `ChangeNotifier`. It is the **only** part of the app that reads/writes to `SharedPreferences`. The UI never directly touches storage.
+1. **Ensure Flutter SDK is installed:**
+   ```bash
+   flutter --version
+   ```
 
-**State it manages:**
-```dart
-AuthState _state         // idle | loading | success | error
-UserModel? _currentUser  // null if logged out
-bool _rememberMe         // persisted across restarts
-bool _isDarkMode         // global theme toggle
-List<String> _bookmarkedCourses  // bookmarked subject codes
-List<String> _enrolledCourses    // enrolled subject codes
-```
+2. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   cd flutter-multi-screen-app-main
+   git checkout feature/course-api-integration
+   ```
 
-**Key methods:**
+3. **Install dependencies:**
+   ```bash
+   flutter pub get
+   ```
 
-| Method | Description |
-|---|---|
-| `init()` | Called at app launch — restores session from SharedPreferences |
-| `register()` | Saves new user to in-memory map + SharedPreferences |
-| `login()` | Validates credentials, creates `UserModel`, persists session |
-| `logout()` | Clears `_currentUser`, wipes session data |
-| `toggleDarkMode()` | Flips theme, persists preference |
-| `toggleBookmark()` | Adds/removes from bookmark list, persists |
+4. **Run on emulator or device:**
+   ```bash
+   flutter run
+   ```
 
-**Remember Me logic:**
-```dart
-if (rememberMe) {
-  await prefs.setString(_keyLoggedInEmail, normalised);
-}
-// On next app launch, init() reads this and auto-logs in
-```
+5. **Run on Chrome (web):**
+   ```bash
+   flutter run -d chrome
+   ```
 
 ---
 
-### `lib/widgets/custom_text_field.dart` — Reusable Input Widget
+## 🎯 Assessment Checklist
 
-**What it does:**
-A single reusable widget that replaces hundreds of lines of repeated `TextFormField` code. Every text input in the app (email, password, name) uses this component.
+### Original Requirements
+| **Requirement** | **Status** |
+|-----------------| -----------|
+| Registration with all fields | ✅ Complete |
+| Email validation | ✅ Regex validated |
+| Password rules (6 chars, uppercase, special) | ✅ Complete |
+| Confirm password matching | ✅ Complete |
+| Gender dropdown with enum | ✅ Enum implemented |
+| Login with email/password | ✅ Complete |
+| Show/hide password toggle | ✅ Eye icon |
+| Remember Me checkbox | ✅ Complete |
+| Dashboard with user info + avatar | ✅ Complete |
+| Subject list with tap navigation | ✅ 5 subjects |
+| Logout → back to login | ✅ With confirmation |
+| Detail screen (header, banner, description, schedule) | ✅ Complete |
+| Custom Validator Class | ✅ Separated |
+| Enum Implementation | ✅ Gender enum |
+| Controller Layer | ✅ AuthController |
+| Clean folder structure | ✅ MVC-like |
+| Runs without errors | ✅ Verified |
 
-**Parameters:**
-```dart
-CustomTextField({
-  required TextEditingController controller,
-  required String label,
-  required String hint,
-  required IconData prefixIcon,
-  String? Function(String?)? validator,
-  bool obscureText = false,
-  TextInputType keyboardType,
-  Widget? suffixIcon,
-  FocusNode? focusNode,
-  FocusNode? nextFocusNode,  // Auto-advances focus on submit
-})
-```
-
-**Behaviour:**
-- `floatingLabelBehavior: FloatingLabelBehavior.never` — keeps the label inside the box at all times
-- `autovalidateMode: AutovalidateMode.onUserInteraction` — shows errors as user types, not just on submit
-- Auto-focus advancement: when the user presses "next" on the keyboard, focus jumps to the next field
-
----
-
-### `lib/screens/splash_screen.dart` — Entry Animation
-
-**What it does:**
-- Shows an animated logo for ~2 seconds
-- Checks `AuthController.isAuthenticated`
-- If logged in → navigates to `/dashboard`
-- If not → navigates to `/login`
-
----
-
-### `lib/screens/login_screen.dart` — Login Screen
-
-**What it does:**
-- Full immersive purple gradient background (`LinearGradient` from `colorScheme.primary` to `colorScheme.tertiary`)
-- `Form` with `GlobalKey<FormState>` for validation control
-- Shows/hides password with `_showPassword` boolean state
-- "Remember Me" checkbox wired to `AuthController.login(rememberMe: _rememberMe)`
-- On success → `Navigator.pushReplacementNamed(context, '/dashboard')`
-- On failure → `SnackBar` with error message from controller
-
----
-
-### `lib/screens/register_screen.dart` — Registration Screen
-
-**What it does:**
-- Same immersive gradient background as Login
-- `LinearProgressIndicator` at the top that fills as the user completes each field (calculated from `_formProgress` which evaluates each validator in real-time)
-- Gender selection via `DropdownButtonFormField<Gender>`
-- Password strength indicator (Weak / Fair / Strong) based on character complexity
-- On success → navigates to `/login` after a 2-second delay
+### 🆕 CRUD API Extension Requirements
+| **Requirement** | **Status** |
+|-----------------|-----------|
+| Fetch course list from API (GET) | ✅ Complete |
+| Display title, ID, and description | ✅ Complete |
+| Show loading indicator while fetching | ✅ Complete |
+| Handle error states properly | ✅ Retry button on error |
+| Add new course using API (POST) | ✅ Complete |
+| Update UI after successful POST | ✅ Prepended to list |
+| Edit existing course details (PUT) | ✅ Complete |
+| Pre-fill existing data in form | ✅ Complete |
+| Send update request to API | ✅ Complete |
+| Reflect changes in UI | ✅ Complete |
+| Delete option for each course | ✅ Complete |
+| Show confirmation before deletion | ✅ Dialog shown |
+| Remove item after successful DELETE | ✅ Complete |
+| Separate service layer for API calls | ✅ `CourseService` |
+| API logic separate from UI | ✅ Controller + Service |
+| Clean and reusable code structure | ✅ Complete |
+| Handle loading, success, error states | ✅ Complete |
+| Branch: `feature/course-api-integration` | ✅ Created |
+| README includes API used | ✅ JSONPlaceholder |
+| README includes documentation reference | ✅ Links included |
+| README includes branch name | ✅ Listed above |
 
 ---
 
-### `lib/screens/dashboard_screen.dart` — Course Dashboard
+## 🏁 Summary
 
-**What it does:**
-- Displays the logged-in user's name, email, and gender in a gradient profile card
-- Lists all subjects from `Subject.values` as interactive cards
-- **Search bar** filters courses in real-time using `.where()` on the enum list
-- **Skeleton loader** animates for 1.5 seconds on load (mimics real API call)
-- **Pull-to-refresh** re-triggers the fake loading animation with haptic feedback
-- **Bookmark toggle** on each card persists to `SharedPreferences`
-- **Logout button** at the bottom opens a confirmation `AlertDialog` before clearing session
+This project consolidates a complete **multi-screen Flutter application** with **full REST API CRUD integration** — demonstrating **professional development practices** from **architecture design** to **form validation** to **API state management**.
 
-**Navigation to detail:**
-```dart
-Navigator.pushNamed(
-  context,
-  '/detail',
-  arguments: {'subject': subject, 'color': color},
-);
-```
+It validates expertise in **Flutter UI development**, **Dart programming**, **REST API integration**, **state management with Provider**, **clean architecture**, and **input validation** following modern mobile development standards.
 
----
-
-### `lib/screens/detail_screen.dart` — Course Detail Dashboard
-
-**What it does:**
-The most complex screen. Receives the subject via route arguments and renders a fully interactive course dashboard with 4 tabs.
-
-#### Tabs:
-| Tab | Content |
-|---|---|
-| **Overview** | About the course → Performance Analytics → Course Progress |
-| **Assignments** | Course-specific assignment list with due dates; auto-marks overdue |
-| **Schedule** | Live countdown timer to next class session |
-| **Instructor** | Teacher name, room, email contact |
-
-#### Live Countdown Timer Logic:
-```dart
-// Parses schedule string: "Mon / Wed / Fri — 9:00 AM – 10:30 AM"
-// 1. Extracts day abbreviations → converts to weekday integers (Mon=1, Tue=2...)
-// 2. Finds the nearest upcoming class day from DateTime.now().weekday
-// 3. Calculates exact Duration until that class starts
-// 4. Displays: "3d 4h" for long durations, "2h 15m 30s" for same-day
-```
-
-#### Assignment Auto-Status Logic:
-```dart
-// Each assignment has a DateTime dueDate
-// If DateTime.now().isAfter(assignment.dueDate) → renders with strikethrough + green checkmark
-// Otherwise → renders as pending
-```
-
----
-
-## 🔑 5. Core Code Logic Explained
-
-### State Management Flow
-```
-User Action (button tap)
-    ↓
-Screen calls context.read<AuthController>().login()
-    ↓
-AuthController sets state = AuthState.loading → notifyListeners()
-    ↓
-UI rebuilds → shows CircularProgressIndicator
-    ↓
-AuthController validates → sets _currentUser → state = AuthState.success
-    ↓
-notifyListeners() → UI rebuilds → Navigator pushes to /dashboard
-```
-
-### Remember Me Persistence Flow
-```
-Login with Remember Me = true
-    ↓
-SharedPreferences.setBool('remember_me', true)
-SharedPreferences.setString('logged_in_email', email)
-    ↓
-App closed / restarted
-    ↓
-main() calls authController.init()
-    ↓
-init() reads 'remember_me' = true from storage
-    ↓
-Reconstructs UserModel from stored email data
-    ↓
-SplashScreen sees isAuthenticated = true → routes to /dashboard
-```
-
-### Form Validation Flow
-```
-User types in field → AutovalidateMode.onUserInteraction triggers
-    ↓
-AppValidators.email(value) is called
-    ↓
-Regex match fails → returns error string
-    ↓
-TextFormField renders red border + error message below field
-    ↓
-User corrects input → validator returns null → error clears
-    ↓
-User taps Submit → _formKey.currentState!.validate() runs ALL validators
-    ↓
-All pass → controller.register() called
-    ↓
-Any fail → submit blocked, errors shown
-```
-
----
-
-## 📱 6. Screen Walkthrough
-
-```
-App Launch
-    └── SplashScreen (2s animation)
-         ├── Not logged in → LoginScreen
-         │    └── Tap "Sign Up" → RegisterScreen
-         │         └── Success → back to LoginScreen
-         │
-         └── Logged in (Remember Me) → DashboardScreen
-              └── Tap Subject Card → DetailScreen
-                   ├── Overview Tab
-                   ├── Assignments Tab
-                   ├── Schedule Tab (Live Timer)
-                   └── Instructor Tab
-```
-
----
-
-## 🚀 7. How to Run Locally
-
-### Prerequisites
-- Flutter SDK 3.10 or higher
-- Android Studio / Xcode
-- An Android emulator or physical device
-
-### Steps
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/rumaisafatima/Syncora_app.git
-cd Syncora_app
-
-# 2. Install dependencies
-flutter pub get
-
-# 3. Run the app
-flutter run
-```
-
-### Build APK (Android)
-```bash
-flutter build apk --release
-# Output: build/app/outputs/flutter-apk/app-release.apk
-```
-
----
-
-## 🌐 8. Git Repository
-
-**Repository:** https://github.com/rumaisafatima/Syncora_app
-
-```bash
-# To push future changes
-git add .
-git commit -m "your message"
-git push
-```
-
----
-
-## 👩‍💻 Developer
-
-**Rumaisa Fatima (Se221076)**
-- GitHub: [@rumaisafatima](https://github.com/rumaisafatima)
-
----
-
-*Built with ❤️ using Flutter & Dart*
+📚 Built with a focus on **code quality**, **reusability**, and **professional architecture** — ready for live demonstration and code review.

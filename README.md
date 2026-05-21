@@ -8,14 +8,7 @@ The app implements a full **registration → login → dashboard → detail** fl
 
 In this extension, the app integrates the **JSONPlaceholder REST API** to implement full **CRUD operations** (Create, Read, Update, Delete) for course data — following a clean service-layer architecture that keeps API logic completely separate from UI.
 
----
 
-### 👤 Student Details
-- **Name:** Rumaisa Fatima
-- **University:** DHA Suffa University
-- **Course:** Mobile Application Development
-
----
 
 💼 This project is part of my **Mobile Application Development** coursework at **DHA Suffa University**, highlighting **Flutter UI development**, **REST API integration**, **state management**, and **multi-screen navigation proficiency**.
 
@@ -465,10 +458,10 @@ The most complex screen. Receives the subject via route arguments and renders a 
 | **Subject** | **Instructor** | **Schedule** | **Location** |
 |-------------|---------------|--------------|--------------|
 | Mobile App Development | Mam Rooshana Mughal | Mon / Wed / Fri  —  9:00 AM – 10:30 AM | CYS Lab |
-| Software Re-engineering | Sir Conrad 'D Silva / Mam Noureen Anwar | Tue / Thu  —  11:00 AM – 12:30 PM | Room 201 – Block A |
+| Software Re-engineering | Sir Conrad 'D Silva / Mam Noureen Anwar | Tue / Thu  —  11:00 AM – 12:30 PM | Room 201  |
 | Management Information Systems | Ahmed Qaiser | Mon / Wed  —  2:00 PM – 3:30 PM | SF-240 |
 | UI/UX Design and Development | Mam Raazia Sosan | Tue / Thu  —  9:00 AM – 10:30 AM | ADV-Ai Lab |
-| Final Year Project II (FYP-II) | Sir Kamran Khan | Fri  —  2:00 PM – 5:00 PM | Project Lab – Block D |
+| Final Year Project II (FYP-II) | Sir Kamran Khan | Fri  —  2:00 PM – 5:00 PM | FYP Lab  |
 
 ---
 
@@ -563,4 +556,4 @@ This project consolidates a complete **multi-screen Flutter application** with *
 
 It validates expertise in **Flutter UI development**, **Dart programming**, **REST API integration**, **state management with Provider**, **clean architecture**, and **input validation** following modern mobile development standards.
 
-📚 Built with a focus on **code quality**, **reusability**, and **professional architecture** — ready for live demonstration and code review.
+📚 Built with a focus on **code quality**, **reusability**, and **professional architecture** 

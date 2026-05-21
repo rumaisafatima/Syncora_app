@@ -51,7 +51,7 @@ Here is the complete visual flow of the application, representing the high-fidel
 > [!NOTE]
 > **Universal UI Fidelity (Emulator & Desktop Web)**
 > 
-> The application UI is built using responsive Material Design 3 guidelines. While these screenshots are captured on a **Desktop Web Browser** for pristine high-resolution clarity, the codebase runs **identically and flawlessly on the Android/iOS Emulator** and physical mobile devices. The exact same widgets, layouts, gradients, and overlays render perfectly across all screen sizes.
+> The application UI is built using responsive Material Design 3 guidelines. While these screenshots are captured on a **Desktop Web Browser** and the **Android Emulator** for pristine clarity, the codebase runs **identically and flawlessly on any Android/iOS physical device**. The exact same widgets, layouts, gradients, and overlays render perfectly across all screen sizes.
 
 ---
 
@@ -248,7 +248,7 @@ enum Subject {
 | CS-402 | Software Re-engineering | Sir Conrad 'D Silva / Mam Noureen Anwar | Room 201 |
 | CS-403 | Management Information Systems | Ahmed Qaiser | SF-240 |
 | CS-404 | UI/UX Design and Development | Mam Raazia Sosan | ADV-Ai Lab |
-| CS-499 | Final Year Project II | Dr. Kamran Khan | Project Lab |
+| CS-499 | Final Year Project II | Sir Kamran Khan | Project Lab |
 
 ---
 
@@ -462,13 +462,13 @@ The most complex screen. Receives the subject via route arguments and renders a 
 
 ## 📚 Enrolled Subjects
 
-| **Subject** | **Instructor** | **Day** | **Timing** | **Location** |
-|-------------|---------------|---------|-----------|-------------|
-| Mobile Application Development | Ms. Roshana Mughal (VF) | Saturday | Slot 4–6 (10:30 – 12:30) | CyS-Lab |
-| Software Re-Engineering | Mr. Conrad D'Silva / Ms. Naureen Anwar (VF) | Saturday | Slot 2–4 (08:30 – 10:30) | SF-239 |
-| Management Information Systems (MIS) | Mr. Muhammad Ahmed Qaiser (VF) | Saturday | Slot 7–9 (13:10 – 15:10) | SF-240 |
-| UI/UX Design & Development | Dr. Raazia Sosan Waseem | Wednesday | Slot 8–9 | adv-AI Lab |
-| FYP-II (AutoTestGen+) | Mam Soohan Abbasi | Wednesday | Slot 10–11 (14:30 – 15:50) | SF-224 |
+| **Subject** | **Instructor** | **Schedule** | **Location** |
+|-------------|---------------|--------------|--------------|
+| Mobile App Development | Mam Rooshana Mughal | Mon / Wed / Fri  —  9:00 AM – 10:30 AM | CYS Lab |
+| Software Re-engineering | Sir Conrad 'D Silva / Mam Noureen Anwar | Tue / Thu  —  11:00 AM – 12:30 PM | Room 201 – Block A |
+| Management Information Systems | Ahmed Qaiser | Mon / Wed  —  2:00 PM – 3:30 PM | SF-240 |
+| UI/UX Design and Development | Mam Raazia Sosan | Tue / Thu  —  9:00 AM – 10:30 AM | ADV-Ai Lab |
+| Final Year Project II (FYP-II) | Sir Kamran Khan | Fri  —  2:00 PM – 5:00 PM | Project Lab – Block D |
 
 ---
 

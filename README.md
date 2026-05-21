@@ -555,57 +555,7 @@ The most complex screen. Receives the subject via route arguments and renders a 
    flutter run -d chrome
    ```
 
----
 
-## 🎯 Assessment Checklist
-
-### Original Requirements
-| **Requirement** | **Status** |
-|-----------------| -----------|
-| Registration with all fields | ✅ Complete |
-| Email validation | ✅ Regex validated |
-| Password rules (6 chars, uppercase, special) | ✅ Complete |
-| Confirm password matching | ✅ Complete |
-| Gender dropdown with enum | ✅ Enum implemented |
-| Login with email/password | ✅ Complete |
-| Show/hide password toggle | ✅ Eye icon |
-| Remember Me checkbox | ✅ Complete |
-| Dashboard with user info + avatar | ✅ Complete |
-| Subject list with tap navigation | ✅ 5 subjects |
-| Logout → back to login | ✅ With confirmation |
-| Detail screen (header, banner, description, schedule) | ✅ Complete |
-| Custom Validator Class | ✅ Separated |
-| Enum Implementation | ✅ Gender enum |
-| Controller Layer | ✅ AuthController |
-| Clean folder structure | ✅ MVC-like |
-| Runs without errors | ✅ Verified |
-
-### 🆕 CRUD API Extension Requirements
-| **Requirement** | **Status** |
-|-----------------|-----------|
-| Fetch course list from API (GET) | ✅ Complete |
-| Display title, ID, and description | ✅ Complete |
-| Show loading indicator while fetching | ✅ Complete |
-| Handle error states properly | ✅ Retry button on error |
-| Add new course using API (POST) | ✅ Complete |
-| Update UI after successful POST | ✅ Prepended to list |
-| Edit existing course details (PUT) | ✅ Complete |
-| Pre-fill existing data in form | ✅ Complete |
-| Send update request to API | ✅ Complete |
-| Reflect changes in UI | ✅ Complete |
-| Delete option for each course | ✅ Complete |
-| Show confirmation before deletion | ✅ Dialog shown |
-| Remove item after successful DELETE | ✅ Complete |
-| Separate service layer for API calls | ✅ `CourseService` |
-| API logic separate from UI | ✅ Controller + Service |
-| Clean and reusable code structure | ✅ Complete |
-| Handle loading, success, error states | ✅ Complete |
-| Branch: `feature/course-api-integration` | ✅ Created |
-| README includes API used | ✅ JSONPlaceholder |
-| README includes documentation reference | ✅ Links included |
-| README includes branch name | ✅ Listed above |
-
----
 
 ## 🏁 Summary
 

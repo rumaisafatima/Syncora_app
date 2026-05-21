@@ -1,4 +1,4 @@
-# 📱 Syncora — Flutter Multi-Screen App
+# 📱 Syncora 
 
 ## 📘 Overview
 

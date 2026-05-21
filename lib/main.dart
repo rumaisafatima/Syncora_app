@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'controllers/auth_controller.dart';
+import 'controllers/course_controller.dart';
+import 'screens/courses_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/detail_screen.dart';
 import 'screens/login_screen.dart';
@@ -19,8 +21,11 @@ void main() async {
   await authController.init();
 
   runApp(
-    ChangeNotifierProvider.value(
-      value: authController,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: authController),
+        ChangeNotifierProvider(create: (_) => CourseController()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -50,10 +55,13 @@ class MyApp extends StatelessWidget {
         '/register': (_) => const RegisterScreen(),
         '/dashboard': (_) => const DashboardScreen(),
         '/detail': (_) => const DetailScreen(),
+        '/courses': (_) => const CoursesScreen(),
       },
       // Guard: redirect to login if not authenticated
       onGenerateRoute: (settings) {
-        if (settings.name == '/dashboard' || settings.name == '/detail') {
+        if (settings.name == '/dashboard' ||
+            settings.name == '/detail' ||
+            settings.name == '/courses') {
           if (!isAuthenticated) {
             return MaterialPageRoute(
                 builder: (_) => const LoginScreen());

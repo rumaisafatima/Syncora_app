@@ -90,34 +90,6 @@ lib/
 
 ---
 
-## 📸 Screenshots
-
-### 🔐 Authentication Flow
-<p align="center">
-  <img src="images/1.png" width="250" alt="Registration Screen"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="images/2.png" width="250" alt="Login Screen"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="images/6.png" width="250" alt="Dashboard Screen"/>
-</p>
-<p align="center">
-  <em>Registration Screen → Login Screen → Dashboard Screen</em>
-</p>
-
-### 📚 Subject Detail Screens
-<p align="center">
-  <img src="images/3.png" width="250" alt="Mobile App Development"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="images/4.png" width="250" alt="UI/UX Design"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="images/5.png" width="250" alt="FYP-II AutoTestGen+"/>
-</p>
-<p align="center">
-  <em>Mobile App Dev → UI/UX Design → FYP-II (AutoTestGen+)</em>
-</p>
-
----
-
 ## ⚙️ Features Implemented
 
 ### Original Features

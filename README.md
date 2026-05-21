@@ -21,6 +21,40 @@ In this extension, the app integrates the **JSONPlaceholder REST API** to implem
 
 ---
 
+## 📸 Screenshots
+
+Here is the complete visual flow of the application, representing the high-fidelity premium user interface, clean gradients, and responsive dialog flows.
+
+### 🔐 Authentication Flow
+| **1. Create Account (Registration)** | **2. Welcome Back (Login)** |
+|:---:|:---:|
+| ![Registration Screen](screenshots_crud/s1_register.png) | ![Login Screen](screenshots_crud/s2_login.png) |
+| Includes real-time progressive completion indicator, active password strength feedback, and dropdown constraints. | Features Remember Me checkbox with automatic local session caching and toggleable password visibility. |
+
+### 📊 Dashboard & Navigation
+| **3. Main Dashboard Overview** | **4. Dashboard Navigation & Session** |
+|:---:|:---:|
+| ![Dashboard Overview](screenshots_crud/s3_dashboard.png) | ![Dashboard Bottom](screenshots_crud/s4_logout.png) |
+| Showcases premium personalized violet header card, interactive quick-action banner, search filter, and course list. | Illustrates the bottom view of scrollable course cards and the unified logout triggers. |
+
+### 🌐 Courses API Integration (CRUD Operations)
+| **5. Live API Course List** | **6. Interactive Delete Confirmation** |
+|:---:|:---:|
+| ![API Courses List](screenshots_crud/s5_api_courses.png) | ![Delete Dialog](screenshots_crud/s6_delete_confirm.png) |
+| Renders courses fetched dynamically from JSONPlaceholder API, with success alerts, and CRUD controllers. | Displays the custom blur glassmorphism overlay dialog prompting for confirmation before REST deletion. |
+
+| **7. Add New Course Form** |
+|:---:|
+| ![Add Course Form](screenshots_crud/s7_add_course.png) |
+| Features a custom animated bottom sheet with comprehensive input text forms to create mock POST items. |
+
+> [!NOTE]
+> **Universal UI Fidelity (Emulator & Desktop Web)**
+> 
+> The application UI is built using responsive Material Design 3 guidelines. While these screenshots are captured on a **Desktop Web Browser** for pristine high-resolution clarity, the codebase runs **identically and flawlessly on the Android/iOS Emulator** and physical mobile devices. The exact same widgets, layouts, gradients, and overlays render perfectly across all screen sizes.
+
+---
+
 ## 🌐 API Used
 
 **[JSONPlaceholder](https://jsonplaceholder.typicode.com)** — A free fake REST API used for testing and prototyping.

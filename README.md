@@ -1,4 +1,4 @@
-# 📱 Syncora 
+# 📱 Syncora:Mobile Application
 
 ## 📘 Overview
 

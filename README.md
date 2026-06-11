@@ -48,10 +48,15 @@ Here is the complete visual flow of the application, representing the high-fidel
 | ![Add Course Form](screenshots_crud/s7_add_course.png) | ![Offline Mode & Local Cache](screenshots_crud/s8_offline_cache.png) |
 | Features a custom animated bottom sheet with comprehensive input text forms to create mock POST items. | Renders locally cached data from Hive storage when network is offline, with an amber banner, sync timestamp, and offline tag. |
 
+| **9. Real-Time Search & Filter** | **10. Edit Course Dialog** |
+|:---:|:---:|
+| ![Search & Filter](screenshots_crud/s9_search_filter.png) | ![Edit Course Form](screenshots_crud/s10_edit_course.png) |
+| Allows filtering courses by title, description, or ID instantly as you type, updating the item count badge in real-time. | Displays a pre-filled dialog to modify course title and description, updates state immediately, and triggers API PUT call. |
+
 > [!NOTE]
-> **Universal UI Fidelity (Emulator & Desktop Web)**
+> **Universal UI Fidelity (Emulator, Mobile, and Web)**
 > 
-> The application UI is built using responsive Material Design 3 guidelines. While these screenshots are captured on a **Desktop Web Browser** and the **Android Emulator** for pristine clarity, the codebase runs **identically and flawlessly on any Android/iOS physical device**. The exact same widgets, layouts, gradients, and overlays render perfectly across all screen sizes.
+> The application UI is built using fully responsive Material Design 3 guidelines. Although these demo screenshots are captured using a **Desktop Web Browser** for high-resolution layout clarity, the application is designed primarily as a **Mobile Application**. It compiles and runs **identically, responsively, and flawlessly on physical iOS/Android devices and emulators**. The exact same widgets, gradients, overlays, and dialogs dynamically scale to fit mobile screen aspect ratios perfectly.
 
 ---
 

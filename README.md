@@ -43,10 +43,10 @@ Here is the complete visual flow of the application, representing the high-fidel
 | ![API Courses List](screenshots_crud/s5_api_courses.png) | ![Delete Dialog](screenshots_crud/s6_delete_confirm.png) |
 | Renders courses fetched dynamically from JSONPlaceholder API, with success alerts, and CRUD controllers. | Displays the custom blur glassmorphism overlay dialog prompting for confirmation before REST deletion. |
 
-| **7. Add New Course Form** |
-|:---:|
-| ![Add Course Form](screenshots_crud/s7_add_course.png) |
-| Features a custom animated bottom sheet with comprehensive input text forms to create mock POST items. |
+| **7. Add New Course Form** | **8. Offline Mode & Local Cache** |
+|:---:|:---:|
+| ![Add Course Form](screenshots_crud/s7_add_course.png) | ![Offline Mode & Local Cache](screenshots_crud/s8_offline_cache.png) |
+| Features a custom animated bottom sheet with comprehensive input text forms to create mock POST items. | Renders locally cached data from Hive storage when network is offline, with an amber banner, sync timestamp, and offline tag. |
 
 > [!NOTE]
 > **Universal UI Fidelity (Emulator & Desktop Web)**

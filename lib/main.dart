@@ -1,10 +1,12 @@
 // lib/main.dart
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'controllers/auth_controller.dart';
 import 'controllers/course_controller.dart';
+import 'data/local/course_local_data_source.dart';
 import 'screens/courses_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/detail_screen.dart';
@@ -16,6 +18,10 @@ import 'screens/register_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ── Hive local storage init ────────────────────────────────────────────────
+  await Hive.initFlutter();
+  await Hive.openBox(CourseLocalDataSource.boxName);
 
   final authController = AuthController();
   await authController.init();

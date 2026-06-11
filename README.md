@@ -2,11 +2,11 @@
 
 ## 📘 Overview
 
-A complete **multi-screen Flutter application** featuring **user authentication**, **form validation**, **navigation**, and **full CRUD course management via REST API** — built as a **coding assessment project** demonstrating professional Flutter development skills.
+A complete **multi-screen Flutter application** featuring **user authentication**, **form validation**, **navigation**, **full CRUD course management via REST API**, **offline-first data persistence with Hive**, and a clean **Repository Pattern** architecture — built as a **coding assessment project** demonstrating professional Flutter development skills.
 
 The app implements a full **registration → login → dashboard → detail** flow with **comprehensive input validation**, **separated business logic**, **reusable components**, and **clean architecture** following industry best practices.
 
-In this extension, the app integrates the **JSONPlaceholder REST API** to implement full **CRUD operations** (Create, Read, Update, Delete) for course data — following a clean service-layer architecture that keeps API logic completely separate from UI.
+In the first extension, the app integrates the **JSONPlaceholder REST API** to implement full **CRUD operations** (Create, Read, Update, Delete) for course data. In this second extension, offline support, optimistic UI updates, repository pattern, and advanced state management have been added.
 
 ---
 
@@ -75,13 +75,17 @@ Here is the complete visual flow of the application, representing the high-fidel
 
 ---
 
-## 🌿 Branch
+## 🌿 Branches
 
-All CRUD API integration work is on the dedicated branch:
+| **Branch** | **Purpose** |
+|---|---|
+| `feature/course-api-integration` | CRUD API integration (Assignment 2) |
+| `feature/offline-cache-and-state-manangement` | Offline support + Repository pattern (Assignment 3) |
 
-```
-feature/course-api-integration
-```
+> All offline & state-management work is on:
+> ```
+> feature/offline-cache-and-state-manangement
+> ```
 
 ---
 
@@ -89,38 +93,54 @@ feature/course-api-integration
 
 ```
 lib/
-├── main.dart                        # App entry point (MultiProvider setup)
+├── main.dart                           # App entry point — Hive init + MultiProvider
+├── data/                               # ── NEW: Data layer (Assignment 3) ──
+│   ├── local/
+│   │   └── course_local_data_source.dart  # Hive box wrapper — read/write JSON
+│   └── repositories/
+│       └── course_repository.dart         # Offline-first orchestration layer
 ├── models/
-│   ├── user_model.dart              # User data class
-│   ├── subject_model.dart           # Subject data class
-│   └── course_model.dart            # Course model (maps JSONPlaceholder /posts)
+│   ├── user_model.dart
+│   ├── subject_model.dart
+│   └── course_model.dart               # Includes full toJson (id + userId)
 ├── services/
-│   └── course_service.dart          # API layer — all HTTP calls (GET/POST/PUT/DELETE)
+│   └── course_service.dart             # HTTP-only — GET/POST/PUT/DELETE
 ├── enums/
-│   └── app_enums.dart               # Gender, AuthState, Subject enums
+│   └── app_enums.dart                  # Gender, AuthState, Subject, CourseStatus
 ├── validators/
-│   └── app_validators.dart          # Reusable static validator class
+│   └── app_validators.dart
 ├── controllers/
-│   ├── auth_controller.dart         # Business logic (auth)
-│   └── course_controller.dart       # State management for CRUD (ChangeNotifier)
+│   ├── auth_controller.dart
+│   └── course_controller.dart          # Upgraded: repo + optimistic updates + search
 ├── screens/
-│   ├── register_screen.dart         # Registration form + validation
-│   ├── login_screen.dart            # Login + remember me
-│   ├── dashboard_screen.dart        # User info + subject list + API Courses entry
-│   ├── courses_screen.dart          # Full CRUD UI for API courses
-│   └── detail_screen.dart           # Subject detail view
+│   ├── register_screen.dart
+│   ├── login_screen.dart
+│   ├── dashboard_screen.dart
+│   ├── courses_screen.dart             # Upgraded: search, pull-to-refresh, empty state
+│   └── detail_screen.dart
 └── widgets/
-    └── custom_text_field.dart       # Reusable text field component
+    └── custom_text_field.dart
 ```
 
-### 🧩 Layer Separation
-| **Layer** | **Responsibility** |
-|-----------|-------------------|
-| **Models** | Type-safe data classes (`UserModel`, `SubjectModel`, `CourseModel`) |
-| **Services** | `CourseService` — all HTTP/API calls. Completely separate from UI. |
-| **Controllers** | `AuthController` + `CourseController` — business logic & state management |
-| **Screens** | One file per screen — pure presentation layer |
-| **Widgets** | `CustomTextField` — reusable component, eliminates duplication |
+### 🧩 Full 5-Layer Architecture (Assignment 3)
+
+```
+CoursesScreen  (UI — presentation only)
+      ↓
+CourseController  (Provider/ChangeNotifier — CourseStatus enum, search, optimistic)
+      ↓
+CourseRepository  (decides: API or cache? syncs cache after mutations)
+      ├── CourseService  (HTTP only — pure network calls)
+      └── CourseLocalDataSource  (Hive box — read/write JSON-encoded courses)
+```
+
+| **Layer** | **File** | **Responsibility** |
+|-----------|----------|-------------------|
+| **UI** | `courses_screen.dart` | Pure presentation — no business logic |
+| **State** | `course_controller.dart` | `CourseStatus` enum, search filter, optimistic mutations |
+| **Repository** | `course_repository.dart` | API-or-cache decision, cache sync after mutations |
+| **API Service** | `course_service.dart` | HTTP calls only |
+| **Local DB** | `course_local_data_source.dart` | Hive JSON persistence |
 
 ---
 
@@ -134,13 +154,76 @@ lib/
 | **Dashboard** | User profile card with avatar, dynamic subject list, tap navigation, logout with confirmation |
 | **Detail** | Subject header with gradient banner, instructor info, course description, schedule, location |
 
-### 🆕 CRUD API Extension
+### 🆕 CRUD API Extension (Assignment 2)
 | **Feature** | **Details** |
 |-------------|------------|
 | **Fetch Courses (GET)** | Retrieves 10 courses from JSONPlaceholder `/posts`. Shows loading indicator while fetching. Handles error states with retry button. |
 | **Add Course (POST)** | FAB → dialog form with title + description. Validates inputs. POSTs to API. Prepends new course to list on success. |
 | **Update Course (PUT)** | Edit button on each card → pre-filled form dialog. PUTs update to API. Reflects changes in UI immediately. |
 | **Delete Course (DELETE)** | Delete button → confirmation dialog. DELETEs from API. Removes item from list after successful response. |
+
+### 🆕🆕 Offline Support & State Upgrade (Assignment 3)
+| **Feature** | **Details** |
+|-------------|------------|
+| **Offline Cache (Hive)** | After a successful API fetch, all courses are stored in Hive. On next launch with no internet, data is served from cache instantly. |
+| **Offline Banner** | Amber banner appears at the top of the course list when showing cached data, with last-sync timestamp. |
+| **Repository Pattern** | `CourseRepository` is the single source of truth — tries API, falls back to Hive, syncs cache after mutations. |
+| **`CourseStatus` Enum** | Replaces boolean flags with `initial / loading / success / error / empty` for precise UI branching. |
+| **Optimistic Add** | Course appears instantly in the list (with temp ID). Rolled back if API fails. |
+| **Optimistic Update** | Title/body updated in UI before API responds. Rolled back on failure with original values. |
+| **Optimistic Delete** | Course removed from list immediately. Restored at original index if API fails. |
+| **Search / Filter** | Real-time search bar filters by title, description, or ID — all client-side, no extra API calls. |
+| **Pull-to-Refresh** | Drag-down refreshes from API, clears search, updates cache. |
+| **Empty State UI** | Distinct views for: no-courses-at-all vs. no-search-results. |
+
+---
+
+## 📦 Tools & Packages (Assignment 3 additions)
+
+| **Package** | **Version** | **Purpose** |
+|-------------|-------------|-------------|
+| `hive` | `^2.2.3` | Fast key-value local database for Flutter |
+| `hive_flutter` | `^1.1.0` | Flutter-specific Hive init + path helpers |
+
+> No `hive_generator` or `build_runner` needed — courses are stored as JSON-encoded strings, making the setup zero-configuration.
+
+---
+
+## 🔄 Offline & State Management Approach
+
+### Offline Strategy — Cache-Then-Network
+
+1. **App launch** — Hive box opens synchronously; previous cache is available immediately.
+2. **`fetchCourses()` called** — Repository attempts the API call.
+   - **Success** → cache overwritten with fresh data; `isFromCache = false`.
+   - **Failure** → cached list returned; `isFromCache = true` → amber banner shown.
+3. **Pull-to-refresh** → forces a new API attempt; on success the cache is refreshed.
+4. **After every mutation** (add/update/delete) → `syncCacheWith()` is called so the local state and the Hive cache stay in sync.
+
+### State Management — `CourseStatus` Enum
+
+Instead of scattered `isLoading` + `errorMessage != null` boolean combinations, the controller exposes a single `CourseStatus` value:
+
+```dart
+enum CourseStatus { initial, loading, success, error, empty }
+```
+
+The UI makes clean, exclusive decisions:
+- `loading` → spinner
+- `error` + no cache → error view with retry
+- `empty` + no search → empty-library view
+- `empty` + search active → no-results view
+- `success` → course list
+
+### Optimistic Updates Flow
+
+```
+User taps Delete
+   → Course removed from list instantly  (UI feels snappy)
+   → DELETE /posts/{id} fired in background
+   → Success? cache synced, snack shows "Deleted"
+   → Failure? course restored at original index, snack shows "Reverted"
+```
 
 ---
 
@@ -580,7 +663,7 @@ The most complex screen. Receives the subject via route arguments and renders a 
 | Clean folder structure | ✅ MVC-like |
 | Runs without errors | ✅ Verified |
 
-### 🆕 CRUD API Extension Requirements
+### 🆕 CRUD API Extension Requirements (Assignment 2)
 | **Requirement** | **Status** |
 |-----------------|-----------|
 | Fetch course list from API (GET) | ✅ Complete |
@@ -605,11 +688,36 @@ The most complex screen. Receives the subject via route arguments and renders a 
 | README includes documentation reference | ✅ Links included |
 | README includes branch name | ✅ Listed above |
 
+### 🆕🆕 Offline & State Management Requirements (Assignment 3)
+| **Requirement** | **Status** |
+|-----------------|-----------|
+| Store fetched data locally after API call | ✅ Hive cache in `CourseLocalDataSource` |
+| Load from local storage when offline | ✅ Repository falls back to cache |
+| Ensure sync when internet available | ✅ Pull-to-refresh + retry updates cache |
+| Proper state management (Provider) | ✅ `CourseStatus` enum + `ChangeNotifier` |
+| Replace basic setState with proper SM | ✅ Provider drives all state |
+| Handle loading / success / error / empty | ✅ All 4 states handled |
+| Separate UI logic from business logic | ✅ Strict layer separation |
+| Repository Pattern implemented | ✅ `CourseRepository` |
+| UI → Controller → Repository → Service → DB | ✅ Full 5-layer architecture |
+| API service handles HTTP only | ✅ `CourseService` untouched |
+| Optimistic delete (with rollback) | ✅ `deleteCourse()` in controller |
+| Optimistic update (with rollback) | ✅ `updateCourse()` in controller |
+| Optimistic add (with rollback) | ✅ `addCourse()` in controller |
+| Pull-to-refresh | ✅ `RefreshIndicator` wraps list |
+| Search / filter courses | ✅ Real-time by title, body, ID |
+| Empty state UI | ✅ No-courses + no-results views |
+| Offline indicator | ✅ Amber banner with last-sync time |
+| Branch: `feature/offline-cache-and-state-manangement` | ✅ Created & pushed |
+| README: tools and packages | ✅ Hive section added |
+| README: architecture explanation | ✅ 5-layer diagram |
+| README: offline & state management approach | ✅ Dedicated section |
+| README: branch name | ✅ Listed |
+| README: screenshots | ✅ 7 screenshots |
+
 ---
 
 ## 🏁 Summary
-
-This project consolidates a complete **multi-screen Flutter application** with **full REST API CRUD integration** — demonstrating **professional development practices** from **architecture design** to **form validation** to **API state management**.
 
 It validates expertise in **Flutter UI development**, **Dart programming**, **REST API integration**, **state management with Provider**, **clean architecture**, and **input validation** following modern mobile development standards.
 

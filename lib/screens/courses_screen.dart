@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../controllers/course_controller.dart';
 import '../models/course_model.dart';
 
@@ -12,8 +13,10 @@ const _bgMid = Color(0xFF1A1340); // card background
 const _cardBg = Color(0xFF231B54); // elevated card
 const _accentPink = Color(0xFFFF6584);
 const _accentCyan = Color(0xFF43E8D8);
+const _accentAmber = Color(0xFFFFA726);
 
-/// Full CRUD screen styled to match Syncora's premium purple aesthetic.
+/// Full CRUD screen — upgraded with offline banner, search/filter,
+/// pull-to-refresh, empty-state UI, and optimistic update feedback.
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
 
@@ -24,6 +27,7 @@ class CoursesScreen extends StatefulWidget {
 class _CoursesScreenState extends State<CoursesScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _fabAnim;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -41,7 +45,18 @@ class _CoursesScreenState extends State<CoursesScreen>
   @override
   void dispose() {
     _fabAnim.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  // ── Pull-to-refresh ────────────────────────────────────────────────────────
+  Future<void> _onRefresh() async {
+    _searchController.clear();
+    context.read<CourseController>()
+      ..clearSearch()
+      ..fetchCourses();
+    // Wait briefly so the RefreshIndicator spinner looks intentional
+    await Future.delayed(const Duration(milliseconds: 800));
   }
 
   // ── Add / Edit Sheet ───────────────────────────────────────────────────────
@@ -56,8 +71,7 @@ class _CoursesScreenState extends State<CoursesScreen>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-            bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         child: Container(
           decoration: const BoxDecoration(
             color: _bgMid,
@@ -131,10 +145,9 @@ class _CoursesScreenState extends State<CoursesScreen>
                   label: 'Description',
                   icon: Icons.description_rounded,
                   maxLines: 3,
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty)
-                          ? 'Description is required'
-                          : null,
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? 'Description is required'
+                      : null,
                 ),
                 const SizedBox(height: 28),
 
@@ -228,7 +241,6 @@ class _CoursesScreenState extends State<CoursesScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Warning icon
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -281,6 +293,7 @@ class _CoursesScreenState extends State<CoursesScreen>
                     child: ElevatedButton.icon(
                       onPressed: () async {
                         Navigator.pop(ctx);
+                        // Optimistic delete — UI updates immediately
                         final success = await context
                             .read<CourseController>()
                             .deleteCourse(course.id);
@@ -288,10 +301,7 @@ class _CoursesScreenState extends State<CoursesScreen>
                           _snack(
                             success
                                 ? '🗑️ Course deleted!'
-                                : (context
-                                        .read<CourseController>()
-                                        .errorMessage ??
-                                    'Delete failed'),
+                                : '↩️ Reverted — ${context.read<CourseController>().errorMessage ?? 'Delete failed'}',
                             success ? Colors.green : _accentPink,
                           );
                         }
@@ -342,137 +352,223 @@ class _CoursesScreenState extends State<CoursesScreen>
       backgroundColor: _bgDark,
       body: Consumer<CourseController>(
         builder: (context, ctrl, _) {
-          return CustomScrollView(
-            slivers: [
-              // ── Gradient App Bar ───────────────────────────────────────────
-              SliverAppBar(
-                expandedHeight: 160,
-                pinned: true,
-                backgroundColor: _purple2,
-                leading: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white12,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.arrow_back_ios_new,
-                        color: Colors.white, size: 18),
-                  ),
-                ),
-                actions: [
-                  GestureDetector(
-                    onTap: () => ctrl.fetchCourses(),
+          // Determine empty-state conditions
+          final isSearchEmpty =
+              ctrl.courses.isEmpty && ctrl.searchQuery.isNotEmpty;
+          final isTrulyEmpty = ctrl.status == CourseStatus.empty &&
+              ctrl.searchQuery.isEmpty;
+
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            color: _purple1,
+            backgroundColor: _bgMid,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                // ── Gradient App Bar ─────────────────────────────────────
+                SliverAppBar(
+                  expandedHeight: 160,
+                  pinned: true,
+                  backgroundColor: _purple2,
+                  leading: GestureDetector(
+                    onTap: () => Navigator.pop(context),
                     child: Container(
-                      margin: const EdgeInsets.fromLTRB(0, 8, 16, 8),
-                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.white12,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: ctrl.isLoading
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Icon(Icons.refresh_rounded,
-                              color: Colors.white, size: 18),
+                      child: const Icon(Icons.arrow_back_ios_new,
+                          color: Colors.white, size: 18),
                     ),
                   ),
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [_purple3, _purple2, _bgDark],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                  actions: [
+                    GestureDetector(
+                      onTap: () {
+                        _searchController.clear();
+                        ctrl.clearSearch();
+                        ctrl.fetchCourses();
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(0, 8, 16, 8),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white12,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ctrl.isLoading
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(Icons.refresh_rounded,
+                                color: Colors.white, size: 18),
                       ),
                     ),
-                    child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 56, 20, 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            const Text(
-                              'API Courses',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.5,
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [_purple3, _purple2, _bgDark],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 56, 20, 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Text(
+                                'API Courses',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: _accentCyan.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: _accentCyan.withOpacity(0.4)),
-                                  ),
-                                  child: Text(
-                                    'JSONPlaceholder  •  ${ctrl.courses.length} courses',
-                                    style: const TextStyle(
-                                      color: _accentCyan,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: _accentCyan.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                          color: _accentCyan.withOpacity(0.4)),
+                                    ),
+                                    child: Text(
+                                      'JSONPlaceholder  •  ${ctrl.courses.length} result${ctrl.courses.length == 1 ? '' : 's'}',
+                                      style: const TextStyle(
+                                        color: _accentCyan,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  if (ctrl.isFromCache) ...[
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            _accentAmber.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(
+                                            color: _accentAmber
+                                                .withOpacity(0.4)),
+                                      ),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.offline_bolt_rounded,
+                                              color: _accentAmber, size: 11),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            'Offline',
+                                            style: TextStyle(
+                                              color: _accentAmber,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
-              // ── Loading ────────────────────────────────────────────────────
-              if (ctrl.isLoading && ctrl.courses.isEmpty)
-                const SliverFillRemaining(
-                  child: _LoadingView(),
-                ),
+                // ── Offline cache banner ─────────────────────────────────
+                if (ctrl.isFromCache)
+                  SliverToBoxAdapter(
+                    child: _OfflineBanner(lastSync: ctrl.lastSyncTime),
+                  ),
 
-              // ── Error ──────────────────────────────────────────────────────
-              if (ctrl.errorMessage != null && ctrl.courses.isEmpty)
-                SliverFillRemaining(
-                  child: _ErrorView(
-                    message: ctrl.errorMessage!,
-                    onRetry: () => ctrl.fetchCourses(),
+                // ── Search bar ───────────────────────────────────────────
+                SliverToBoxAdapter(
+                  child: _SearchBarWidget(
+                    controller: _searchController,
+                    onChanged: (val) => ctrl.setSearchQuery(val),
+                    onClear: () {
+                      _searchController.clear();
+                      ctrl.clearSearch();
+                    },
                   ),
                 ),
 
-              // ── Course List ────────────────────────────────────────────────
-              if (ctrl.courses.isNotEmpty)
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (ctx, i) => _CourseCard(
-                        course: ctrl.courses[i],
-                        index: i,
-                        onEdit: () => _showCourseSheet(course: ctrl.courses[i]),
-                        onDelete: () => _confirmDelete(ctrl.courses[i]),
-                      ),
-                      childCount: ctrl.courses.length,
+                // ── Loading ──────────────────────────────────────────────
+                if (ctrl.isLoading && ctrl.allCourses.isEmpty)
+                  const SliverFillRemaining(child: _LoadingView()),
+
+                // ── Error ────────────────────────────────────────────────
+                if (ctrl.status == CourseStatus.error &&
+                    ctrl.allCourses.isEmpty)
+                  SliverFillRemaining(
+                    child: _ErrorView(
+                      message: ctrl.errorMessage!,
+                      onRetry: () => ctrl.fetchCourses(),
                     ),
                   ),
-                ),
-            ],
+
+                // ── Empty — no search results ────────────────────────────
+                if (!ctrl.isLoading && isSearchEmpty)
+                  SliverFillRemaining(
+                    child: _EmptyView(
+                      icon: Icons.search_off_rounded,
+                      title: 'No results for "${ctrl.searchQuery}"',
+                      subtitle: 'Try a different search term.',
+                    ),
+                  ),
+
+                // ── Empty — no courses at all ────────────────────────────
+                if (!ctrl.isLoading && isTrulyEmpty)
+                  SliverFillRemaining(
+                    child: _EmptyView(
+                      icon: Icons.library_books_outlined,
+                      title: 'No Courses Yet',
+                      subtitle:
+                          'Tap "Add Course" below to create your first course.',
+                    ),
+                  ),
+
+                // ── Course list ──────────────────────────────────────────
+                if (ctrl.courses.isNotEmpty)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (ctx, i) => _CourseCard(
+                          course: ctrl.courses[i],
+                          index: i,
+                          onEdit: () =>
+                              _showCourseSheet(course: ctrl.courses[i]),
+                          onDelete: () => _confirmDelete(ctrl.courses[i]),
+                        ),
+                        childCount: ctrl.courses.length,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           );
         },
       ),
@@ -502,8 +598,7 @@ class _CoursesScreenState extends State<CoursesScreen>
               borderRadius: BorderRadius.circular(18),
               onTap: () => _showCourseSheet(),
               child: const Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                padding: EdgeInsets.symmetric(horizontal: 22, vertical: 14),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -522,6 +617,104 @@ class _CoursesScreenState extends State<CoursesScreen>
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Offline Cache Banner ───────────────────────────────────────────────────────
+class _OfflineBanner extends StatelessWidget {
+  final DateTime? lastSync;
+  const _OfflineBanner({this.lastSync});
+
+  String _timeAgo(DateTime t) {
+    final d = DateTime.now().difference(t);
+    if (d.inSeconds < 60) return 'just now';
+    if (d.inMinutes < 60) return '${d.inMinutes}m ago';
+    if (d.inHours < 24) return '${d.inHours}h ago';
+    return '${d.inDays}d ago';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: _accentAmber.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _accentAmber.withOpacity(0.35)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.cloud_off_rounded,
+              color: _accentAmber, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              lastSync != null
+                  ? 'Showing cached data  •  Last synced ${_timeAgo(lastSync!)}'
+                  : 'Offline — showing cached data',
+              style: const TextStyle(
+                color: _accentAmber,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const Icon(Icons.info_outline_rounded,
+              color: _accentAmber, size: 16),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Search Bar Widget ──────────────────────────────────────────────────────────
+class _SearchBarWidget extends StatelessWidget {
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onClear;
+
+  const _SearchBarWidget({
+    required this.controller,
+    required this.onChanged,
+    required this.onClear,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: TextField(
+        controller: controller,
+        style: const TextStyle(color: Colors.white),
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          hintText: 'Search by title, description or ID…',
+          hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
+          prefixIcon:
+              const Icon(Icons.search_rounded, color: _purple1, size: 20),
+          suffixIcon: controller.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.close_rounded,
+                      color: Colors.white38, size: 18),
+                  onPressed: onClear,
+                )
+              : null,
+          filled: true,
+          fillColor: _bgMid,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Colors.white12),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: _purple1, width: 1.5),
           ),
         ),
       ),
@@ -559,7 +752,7 @@ class _LoadingView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           const Text(
-            'Fetching courses...',
+            'Fetching courses…',
             style: TextStyle(
               color: Colors.white60,
               fontSize: 15,
@@ -627,6 +820,63 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
+// ── Empty View ─────────────────────────────────────────────────────────────────
+class _EmptyView extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  const _EmptyView({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: _purple1.withOpacity(0.1),
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: _purple1.withOpacity(0.25), width: 1.5),
+              ),
+              child: Icon(icon, color: _purple1, size: 48),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                height: 1.3,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white54,
+                fontSize: 13,
+                height: 1.6,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ── Course Card ────────────────────────────────────────────────────────────────
 class _CourseCard extends StatelessWidget {
   final CourseModel course;
@@ -641,7 +891,6 @@ class _CourseCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  // Cycling gradient accent colors for cards
   static const _accents = [
     [Color(0xFF6C63FF), Color(0xFF3D2C8D)],
     [Color(0xFF4A00E0), Color(0xFF8E2DE2)],
@@ -671,9 +920,10 @@ class _CourseCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Gradient Header ───────────────────────────────────────────────
+          // ── Gradient Header ─────────────────────────────────────────────
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: accentPair,
@@ -685,7 +935,6 @@ class _CourseCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // ID badge
                 Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8, vertical: 3),
@@ -720,7 +969,7 @@ class _CourseCard extends StatelessWidget {
             ),
           ),
 
-          // ── Body ──────────────────────────────────────────────────────────
+          // ── Body ───────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             child: Text(
@@ -735,13 +984,12 @@ class _CourseCard extends StatelessWidget {
             ),
           ),
 
-          // ── Action Row ────────────────────────────────────────────────────
+          // ── Action Row ─────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 4, 10, 10),
             child: Row(
               children: [
                 const Spacer(),
-                // Edit
                 _ActionChip(
                   label: 'Edit',
                   icon: Icons.edit_rounded,
@@ -749,7 +997,6 @@ class _CourseCard extends StatelessWidget {
                   onTap: onEdit,
                 ),
                 const SizedBox(width: 8),
-                // Delete
                 _ActionChip(
                   label: 'Delete',
                   icon: Icons.delete_rounded,
@@ -784,8 +1031,7 @@ class _ActionChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
           color: color.withOpacity(0.15),
           borderRadius: BorderRadius.circular(10),
